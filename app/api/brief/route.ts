@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server";
 import { buildPrepRoomResponse } from "@/lib/brief";
-import { getEvidenceSummary, getFixtures, getHeroReplay, makeManualFixture } from "@/lib/data";
+import {
+  getDefaultFixturePair,
+  getEvidenceSummary,
+  getFixtures,
+  getHeroReplay,
+  makeManualFixture
+} from "@/lib/data";
 import type { Fixture } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -18,6 +24,39 @@ function badRequest(message: string, details?: unknown) {
     },
     { status: 400 }
   );
+}
+
+function parseFixtureIds(value: string | null): string[] {
+  return (value ?? "")
+    .split(",")
+    .map((id) => id.trim())
+    .filter(Boolean);
+}
+
+type SeedSelection = { fixtures: Fixture[] } | { error: NextResponse };
+
+function selectSeedFixtures(seedFixtures: Fixture[], requestedIds: string[]): SeedSelection {
+  const byId = new Map(seedFixtures.map((fixture) => [fixture.id, fixture]));
+  const uniqueIds = [...new Set(requestedIds)];
+
+  if (uniqueIds.length !== requestedIds.length) {
+    return { error: badRequest("Select two different fixtures.", { requestedIds }) };
+  }
+
+  const missingIds = uniqueIds.filter((id) => !byId.has(id));
+  if (missingIds.length > 0) {
+    return {
+      error: badRequest("One or more fixture IDs were not found in the World Cup seed.", {
+        missingIds
+      })
+    };
+  }
+
+  if (uniqueIds.length !== 2) {
+    return { error: badRequest("Select exactly two fixtures.", { requestedIds }) };
+  }
+
+  return { fixtures: uniqueIds.map((id) => byId.get(id) as Fixture) };
 }
 
 function isValidDate(value: string | undefined): value is string {
@@ -47,14 +86,24 @@ function validManualFixture(fixture: Partial<Fixture>) {
   );
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   const [fixtures, summary, replay] = await Promise.all([
     getFixtures(),
     getEvidenceSummary(),
     getHeroReplay()
   ]);
+  const { searchParams } = new URL(request.url);
+  const requestedIds = parseFixtureIds(searchParams.get("fixtureIds"));
+  const selected =
+    requestedIds.length > 0
+      ? selectSeedFixtures(fixtures, requestedIds)
+      : { fixtures: getDefaultFixturePair(fixtures) };
 
-  return NextResponse.json(buildPrepRoomResponse(fixtures.slice(0, 2), summary, replay));
+  if ("error" in selected) {
+    return selected.error;
+  }
+
+  return NextResponse.json(buildPrepRoomResponse(selected.fixtures, summary, replay));
 }
 
 export async function POST(request: Request) {
@@ -65,28 +114,15 @@ export async function POST(request: Request) {
     getHeroReplay()
   ]);
 
-  const byId = new Map(seedFixtures.map((fixture) => [fixture.id, fixture]));
   const requestedIds = (body.fixtureIds ?? []).map((id) => id.trim()).filter(Boolean);
 
   if (requestedIds.length > 0) {
-    const uniqueIds = [...new Set(requestedIds)];
-    if (uniqueIds.length !== requestedIds.length) {
-      return badRequest("Select two different fixtures.", { requestedIds });
+    const selected = selectSeedFixtures(seedFixtures, requestedIds);
+    if ("error" in selected) {
+      return selected.error;
     }
 
-    const missingIds = uniqueIds.filter((id) => !byId.has(id));
-    if (missingIds.length > 0) {
-      return badRequest("One or more fixture IDs were not found in the World Cup seed.", {
-        missingIds
-      });
-    }
-
-    if (uniqueIds.length !== 2) {
-      return badRequest("Select exactly two fixtures.", { requestedIds });
-    }
-
-    const fixtures = uniqueIds.map((id) => byId.get(id) as Fixture);
-    return NextResponse.json(buildPrepRoomResponse(fixtures, summary, replay));
+    return NextResponse.json(buildPrepRoomResponse(selected.fixtures, summary, replay));
   }
 
   if (body.fixtures) {

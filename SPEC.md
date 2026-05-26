@@ -35,11 +35,13 @@ The app labels the OpenFootball fixture seed as schedule context and the StatsBo
 
 ### `GET /api/fixtures`
 
-Returns seeded World Cup fixtures. Optional query parameter `q` filters by team, venue, date, group, round, or competition.
+Returns seeded World Cup fixtures. Optional query parameter `q` filters by team, venue, date, group, round, or competition. Optional `limit` caps the response, and `ids=<id-a>,<id-b>` returns exact seeded fixtures in caller order.
+
+The response includes `total`, `defaultPair`, `nextKickoffUtc`, `missingIds`, and `data`.
 
 ### `GET /api/brief`
 
-Returns the default prep room for the first two seeded fixtures.
+Returns the default prep room for the next two seeded fixtures. Optional `fixtureIds=<id-a>,<id-b>` returns the prep room for a specific seeded pair and uses the same validation rules as `POST /api/brief`.
 
 ### `POST /api/brief`
 

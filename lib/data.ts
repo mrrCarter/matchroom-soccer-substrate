@@ -22,11 +22,37 @@ export async function getHeroReplay(): Promise<HeroReplay> {
   return readJson<HeroReplay>("matchroom-hero-replay.json");
 }
 
-export function filterFixtures(fixtures: Fixture[], query: string | null): Fixture[] {
+function fixtureSortTime(fixture: Fixture): number {
+  const parsed = Date.parse(fixture.kickOffUtc ?? fixture.date);
+  return Number.isFinite(parsed) ? parsed : Number.MAX_SAFE_INTEGER;
+}
+
+export function getUpcomingFixtures(fixtures: Fixture[], now = new Date()): Fixture[] {
+  const nowMs = now.getTime();
+  const sorted = [...fixtures].sort((a, b) => fixtureSortTime(a) - fixtureSortTime(b));
+  const upcoming = sorted.filter((fixture) => fixtureSortTime(fixture) >= nowMs);
+
+  return upcoming.length > 0 ? upcoming : sorted;
+}
+
+export function getDefaultFixturePair(fixtures: Fixture[], now = new Date()): Fixture[] {
+  return getUpcomingFixtures(fixtures, now).slice(0, 2);
+}
+
+export function parseFixtureLimit(value: string | null, fallback = 36, max = 104): number {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed < 1) {
+    return fallback;
+  }
+
+  return Math.min(Math.floor(parsed), max);
+}
+
+export function filterFixtures(fixtures: Fixture[], query: string | null, limit = 36): Fixture[] {
   const q = (query ?? "").trim().toLowerCase();
 
   if (!q) {
-    return fixtures.slice(0, 36);
+    return getUpcomingFixtures(fixtures).slice(0, limit);
   }
 
   return fixtures
@@ -45,7 +71,7 @@ export function filterFixtures(fixtures: Fixture[], query: string | null): Fixtu
         .toLowerCase()
         .includes(q);
     })
-    .slice(0, 60);
+    .slice(0, limit);
 }
 
 export function makeManualFixture(input: Partial<Fixture>, fallbackId: string): Fixture {

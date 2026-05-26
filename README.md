@@ -26,6 +26,15 @@ npm run dev -- --port 3002
 
 ## API Quick Check
 
+`GET /api/fixtures` returns seeded upcoming fixtures with metadata for the default pair:
+
+```bash
+curl "http://localhost:3002/api/fixtures?limit=4"
+curl "http://localhost:3002/api/fixtures?q=usa"
+```
+
+`GET /api/brief?fixtureIds=<id-a>,<id-b>` returns a browser-openable prep room JSON for a specific pair.
+
 `POST /api/brief` accepts exactly two seeded fixture IDs:
 
 ```json
@@ -58,6 +67,12 @@ Or exactly two manual matches:
 ```
 
 The API returns `400` for duplicate seeded IDs, missing seeded IDs, invalid manual dates, or anything other than two matches.
+
+The app shell also accepts the same pair in the URL:
+
+```text
+/?fixtureIds=2026-06-12-usa-paraguay-los-angeles-inglewood-18,2026-06-13-qatar-switzerland-san-francisco-bay-area-santa-clara-7
+```
 
 ## Product Direction
 
