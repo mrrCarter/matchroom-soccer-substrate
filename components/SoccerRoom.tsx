@@ -18,15 +18,6 @@ function fixtureLabel(fixture: Fixture) {
 }
 
 function formatDate(fixture: Fixture) {
-  if (fixture.kickOffUtc) {
-    return new Intl.DateTimeFormat("en", {
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "2-digit"
-    }).format(new Date(fixture.kickOffUtc));
-  }
-
   return fixture.time ? `${fixture.date} ${fixture.time}` : fixture.date;
 }
 
