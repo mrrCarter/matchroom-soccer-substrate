@@ -85,14 +85,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Type check
-        run: npm run typecheck
-
       - name: Lint
         run: npm run lint
 
       - name: Build
         run: npm run build
+
+      - name: Type check
+        run: npm run typecheck
 
       - name: Validate SentinelLayer token
         shell: bash
@@ -109,9 +109,7 @@ jobs:
           github_token: ${{ github.token }}
           sentinelayer_token: ${{ secrets.SENTINELAYER_TOKEN }}
           sentinelayer_spec_id: ${{ vars.SENTINELAYER_SPEC_ID || '' }}
-          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
-          google_api_key: ${{ secrets.GOOGLE_API_KEY }}
-          sentinelayer_managed_llm: "false"
+          sentinelayer_managed_llm: "true"
           scan_mode: ${{ github.event_name == 'workflow_dispatch' && inputs.scan_mode || 'deep' }}
           severity_gate: ${{ github.event_name == 'workflow_dispatch' && inputs.severity_gate || 'P1' }}
           model: gemini-2.5-flash
@@ -120,9 +118,6 @@ jobs:
           use_codex: "true"
           codex_only: "false"
           llm_failure_policy: block
-          playwright_mode: off
-          sbom_mode: baseline
-          wait_for_completion: "true"
 
       - name: Upload Omar Gate artifacts
         if: always() && steps.omar.outputs.run_id != ''

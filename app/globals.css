@@ -161,6 +161,15 @@ h1 {
   max-width: 690px;
 }
 
+.contrast-line {
+  max-width: 660px;
+  margin: 18px 0 0;
+  color: #c9ffe1;
+  font-size: clamp(15px, 1.55vw, 18px);
+  font-weight: 760;
+  line-height: 1.45;
+}
+
 .stat-ribbon {
   display: grid;
   grid-template-columns: auto 1fr;

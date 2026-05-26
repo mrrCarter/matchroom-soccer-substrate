@@ -34,6 +34,10 @@ export default async function Home() {
             Pick World Cup fixtures or enter any upcoming match. MatchRoom keeps the fixture facts,
             tactical evidence, skeptic checks, and coach actions in one room.
           </p>
+          <p className="contrast-line">
+            Live-score apps tell you what happened. MatchRoom tells you what to do about it
+            with the evidence.
+          </p>
           <div className="stat-ribbon">
             <div className="stat-number">{summary.openingStat.value}</div>
             <div className="stat-copy">
