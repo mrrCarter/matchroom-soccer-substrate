@@ -54,13 +54,33 @@ or:
 ```json
 {
   "fixtures": [
-    { "homeTeam": "United States", "awayTeam": "TBD", "date": "2026-06-12" },
-    { "homeTeam": "England", "awayTeam": "TBD", "date": "2026-06-13" }
+    {
+      "homeTeam": "United States",
+      "awayTeam": "TBD",
+      "competition": "Manual upcoming match",
+      "date": "2026-06-12",
+      "time": "19:00",
+      "venue": "Custom venue"
+    },
+    {
+      "homeTeam": "England",
+      "awayTeam": "TBD",
+      "competition": "Manual upcoming match",
+      "date": "2026-06-13",
+      "time": "19:00",
+      "venue": "Custom venue"
+    }
   ]
 }
 ```
 
 Returns `PrepRoomResponse` from `lib/types.ts`.
+
+Validation rules:
+
+- Seeded fixture requests must contain exactly two distinct fixture IDs from the cached World Cup seed.
+- Manual fixture requests must contain exactly two rows, each with home team, away team, competition, and a valid `YYYY-MM-DD` date.
+- Invalid requests return `400` with an `error` message and optional `details`.
 
 ### `GET /api/health`
 

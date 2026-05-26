@@ -24,6 +24,45 @@ npm run build
 npm run dev -- --port 3002
 ```
 
+## API Quick Check
+
+`POST /api/brief` accepts exactly two seeded fixture IDs:
+
+```json
+{ "fixtureIds": ["2026-06-11-mexico-south-africa-mexico-city-0", "2026-06-11-south-korea-czech-republic-guadalajara-zapopan-1"] }
+```
+
+Or exactly two manual matches:
+
+```json
+{
+  "fixtures": [
+    {
+      "homeTeam": "United States",
+      "awayTeam": "Japan",
+      "competition": "Friendly",
+      "date": "2026-06-01",
+      "time": "20:00",
+      "venue": "Boston"
+    },
+    {
+      "homeTeam": "England",
+      "awayTeam": "Brazil",
+      "competition": "Friendly",
+      "date": "2026-06-02",
+      "time": "19:30",
+      "venue": "London"
+    }
+  ]
+}
+```
+
+The API returns `400` for duplicate seeded IDs, missing seeded IDs, invalid manual dates, or anything other than two matches.
+
 ## Product Direction
 
 FotMob is excellent for live scores, xG, shot maps, stats, commentary, lineups, and alerts. MatchRoom's wedge is the layer after the match center: a coach-ready prep room with skeptic checks, evidence receipts, and actionable tactical priorities across two upcoming fixtures.
+
+## Deployment Note
+
+The app is ready for Vercel or another Next.js host, but this shell does not currently have non-interactive deployment credentials. `VERCEL_*` and AWS auth environment variables are absent, and `npx vercel whoami` waits for login.
