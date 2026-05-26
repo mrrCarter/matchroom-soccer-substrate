@@ -1,0 +1,228 @@
+{
+  "generatedAt": "2026-05-26T20:04:10.014Z",
+  "source": {
+    "name": "StatsBomb Open Data",
+    "attribution": "Data provided by StatsBomb Open Data. This demo is a research/exploration project built for a sports-tech hackathon.",
+    "eventsUrl": "https://raw.githubusercontent.com/statsbomb/open-data/master/data/events/3795220.json",
+    "threeSixtyUrl": "https://raw.githubusercontent.com/statsbomb/open-data/master/data/three-sixty/3795220.json",
+    "matchesUrl": "https://raw.githubusercontent.com/statsbomb/open-data/master/data/matches/55/43.json"
+  },
+  "match": {
+    "matchId": 3795220,
+    "competition": "UEFA Euro",
+    "season": "2020",
+    "stage": "Semi-finals",
+    "date": "2021-07-06",
+    "kickOff": "19:00:00.000",
+    "homeTeam": "Italy",
+    "awayTeam": "Spain",
+    "score": "1-1",
+    "stadium": "Wembley Stadium",
+    "dataVersion": "1.1.0",
+    "eventCount": 4824,
+    "threeSixtyFrameCount": 4244
+  },
+  "openingStat": {
+    "label": "Spain right channel share",
+    "value": "43%",
+    "numerator": 43,
+    "denominator": 101,
+    "text": "Spain sent 43 of 101 verified final-third entries through the right channel."
+  },
+  "teams": [
+    {
+      "team": "Italy",
+      "passes": 425,
+      "successfulPasses": 321,
+      "passCompletionPct": 76,
+      "carries": 341,
+      "shots": 12,
+      "xg": 4.32,
+      "progressiveActions": 30,
+      "finalThirdEntries": 23,
+      "boxEntries": 7,
+      "ballRecoveries": 46,
+      "pressures": 192,
+      "channelUsage": {
+        "left": 10,
+        "center": 7,
+        "right": 6
+      },
+      "topChannel": "left",
+      "topChannelSharePct": 43,
+      "evidence": [
+        {
+          "eventId": "a3e07d0a-0f8a-4e25-acb3-59451890027d",
+          "matchId": 3795220,
+          "minute": 6,
+          "second": 49,
+          "team": "Italy",
+          "player": "Marco Verratti",
+          "eventType": "Pass",
+          "description": "Marco Verratti moved the ball into the center final-third channel.",
+          "x": 79.4,
+          "y": 28
+        },
+        {
+          "eventId": "6d4f2605-8fbc-48e2-93c3-3e776fdca781",
+          "matchId": 3795220,
+          "minute": 20,
+          "second": 7,
+          "team": "Italy",
+          "player": "Lorenzo Insigne",
+          "eventType": "Pass",
+          "description": "Lorenzo Insigne moved the ball into the left final-third channel.",
+          "x": 71.9,
+          "y": 14.9
+        },
+        {
+          "eventId": "25df3db9-f0a8-40ab-b7f0-c19e690a6f9f",
+          "matchId": 3795220,
+          "minute": 33,
+          "second": 33,
+          "team": "Italy",
+          "player": "Lorenzo Insigne",
+          "eventType": "Carry",
+          "description": "Lorenzo Insigne moved the ball into the left final-third channel.",
+          "x": 78.3,
+          "y": 28.8
+        },
+        {
+          "eventId": "aa2ba9e3-32d3-45d0-a4da-4cf7cad3524c",
+          "matchId": 3795220,
+          "minute": 34,
+          "second": 11,
+          "team": "Italy",
+          "player": "Marco Verratti",
+          "eventType": "Pass",
+          "description": "Marco Verratti moved the ball into the center final-third channel.",
+          "x": 74.7,
+          "y": 48.5
+        },
+        {
+          "eventId": "2fbe0adf-f3f6-42fd-8188-71bb3d6de6ef",
+          "matchId": 3795220,
+          "minute": 36,
+          "second": 10,
+          "team": "Italy",
+          "player": "Emerson Palmieri dos Santos",
+          "eventType": "Carry",
+          "description": "Emerson Palmieri dos Santos moved the ball into the center final-third channel.",
+          "x": 40.9,
+          "y": 27.8
+        },
+        {
+          "eventId": "cd49aeea-1b18-4c6b-86d8-d2743d6a2a8e",
+          "matchId": 3795220,
+          "minute": 40,
+          "second": 44,
+          "team": "Italy",
+          "player": "Giorgio Chiellini",
+          "eventType": "Pass",
+          "description": "Giorgio Chiellini moved the ball into the center final-third channel.",
+          "x": 71.9,
+          "y": 31.6
+        }
+      ]
+    },
+    {
+      "team": "Spain",
+      "passes": 946,
+      "successfulPasses": 833,
+      "passCompletionPct": 88,
+      "carries": 811,
+      "shots": 20,
+      "xg": 4.54,
+      "progressiveActions": 110,
+      "finalThirdEntries": 101,
+      "boxEntries": 14,
+      "ballRecoveries": 55,
+      "pressures": 219,
+      "channelUsage": {
+        "left": 38,
+        "center": 20,
+        "right": 43
+      },
+      "topChannel": "right",
+      "topChannelSharePct": 43,
+      "evidence": [
+        {
+          "eventId": "479f5cee-ba0e-470e-895e-c923f135f098",
+          "matchId": 3795220,
+          "minute": 0,
+          "second": 3,
+          "team": "Spain",
+          "player": "Aymeric Laporte",
+          "eventType": "Pass",
+          "description": "Aymeric Laporte moved the ball into the right final-third channel.",
+          "x": 35.8,
+          "y": 34.4
+        },
+        {
+          "eventId": "07f09f3b-baea-4460-9723-b898206bad1a",
+          "matchId": 3795220,
+          "minute": 4,
+          "second": 55,
+          "team": "Spain",
+          "player": "Ferrán Torres García",
+          "eventType": "Carry",
+          "description": "Ferrán Torres García moved the ball into the left final-third channel.",
+          "x": 64.7,
+          "y": 3.4
+        },
+        {
+          "eventId": "4e83ae24-423c-4302-b157-5ccc8367fc9f",
+          "matchId": 3795220,
+          "minute": 5,
+          "second": 46,
+          "team": "Spain",
+          "player": "Jordi Alba Ramos",
+          "eventType": "Pass",
+          "description": "Jordi Alba Ramos moved the ball into the left final-third channel.",
+          "x": 69.6,
+          "y": 5.1
+        },
+        {
+          "eventId": "045b47db-ab54-4c2e-b60c-65ac18d9298e",
+          "matchId": 3795220,
+          "minute": 6,
+          "second": 0,
+          "team": "Spain",
+          "player": "Pedro González López",
+          "eventType": "Pass",
+          "description": "Pedro González López moved the ball into the left final-third channel.",
+          "x": 64.4,
+          "y": 19.6
+        },
+        {
+          "eventId": "9ff564fd-cfbc-4dd6-a0ad-2e62757246f9",
+          "matchId": 3795220,
+          "minute": 8,
+          "second": 17,
+          "team": "Spain",
+          "player": "Mikel Oyarzabal Ugarte",
+          "eventType": "Carry",
+          "description": "Mikel Oyarzabal Ugarte moved the ball into the right final-third channel.",
+          "x": 78.1,
+          "y": 66.5
+        },
+        {
+          "eventId": "aaf3a8c6-0f35-45a4-8d6b-f4526fa0a41a",
+          "matchId": 3795220,
+          "minute": 9,
+          "second": 2,
+          "team": "Spain",
+          "player": "Jorge Resurrección Merodio",
+          "eventType": "Pass",
+          "description": "Jorge Resurrección Merodio moved the ball into the right final-third channel.",
+          "x": 76.2,
+          "y": 66.5
+        }
+      ]
+    }
+  ],
+  "topInsights": [
+    "Italy: 23 final-third entries, 30 progressive actions, 7 box entries, 4.32 xG.",
+    "Spain: 101 final-third entries, 110 progressive actions, 14 box entries, 4.54 xG."
+  ]
+}
