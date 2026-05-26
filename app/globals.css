@@ -338,6 +338,34 @@ h1 {
   padding: 9px 12px;
 }
 
+.primary-button:disabled,
+.secondary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.request-state {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+  padding: 10px 12px;
+}
+
+.request-state[data-status="success"] {
+  border-color: rgba(60, 226, 143, 0.38);
+  background: rgba(60, 226, 143, 0.08);
+  color: #c9ffe1;
+}
+
+.request-state[data-status="error"] {
+  border-color: rgba(255, 104, 104, 0.45);
+  background: rgba(255, 104, 104, 0.09);
+  color: #ffd0d0;
+}
+
 .tab-row {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

@@ -12,6 +12,10 @@ type SoccerRoomProps = {
 };
 
 type Mode = "seed" | "manual";
+type RequestState = {
+  status: "idle" | "success" | "error";
+  message: string;
+};
 
 function fixtureLabel(fixture: Fixture) {
   return `${fixture.homeTeam} vs ${fixture.awayTeam}`;
@@ -25,6 +29,15 @@ function planMetricLabel(plan: PrepRoomResponse["plans"][number]) {
   return `${plan.fixture.competition} / ${plan.fixture.round}`;
 }
 
+function manualFixtureReady(fixture: Partial<Fixture>) {
+  return Boolean(
+    fixture.homeTeam?.trim() &&
+      fixture.awayTeam?.trim() &&
+      fixture.competition?.trim() &&
+      fixture.date?.trim()
+  );
+}
+
 const manualDefaults: [Partial<Fixture>, Partial<Fixture>] = [
   {
     homeTeam: "United States",
@@ -32,6 +45,7 @@ const manualDefaults: [Partial<Fixture>, Partial<Fixture>] = [
     competition: "Manual upcoming match",
     season: "2026",
     date: "2026-06-12",
+    time: "19:00",
     venue: "Custom venue"
   },
   {
@@ -40,6 +54,7 @@ const manualDefaults: [Partial<Fixture>, Partial<Fixture>] = [
     competition: "Manual upcoming match",
     season: "2026",
     date: "2026-06-13",
+    time: "19:00",
     venue: "Custom venue"
   }
 ];
@@ -58,7 +73,16 @@ export default function SoccerRoom({
     initialPrep.plans[1]?.fixture.id ?? initialFixtures[1]?.id ?? ""
   ]);
   const [manualFixtures, setManualFixtures] = useState(manualDefaults);
+  const [requestState, setRequestState] = useState<RequestState>({
+    status: "idle",
+    message: "Ready to build a two-match prep room."
+  });
   const [isPending, startTransition] = useTransition();
+
+  const fixtureById = useMemo(
+    () => new Map(initialFixtures.map((fixture) => [fixture.id, fixture])),
+    [initialFixtures]
+  );
 
   const filteredFixtures = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -85,6 +109,16 @@ export default function SoccerRoom({
       .slice(0, 60);
   }, [initialFixtures, query]);
 
+  const seedOptions = useMemo(() => {
+    const pinned = fixtureIds
+      .map((id) => fixtureById.get(id))
+      .filter((fixture): fixture is Fixture => Boolean(fixture));
+    return [...new Map([...pinned, ...filteredFixtures].map((fixture) => [fixture.id, fixture])).values()];
+  }, [filteredFixtures, fixtureById, fixtureIds]);
+
+  const seedSelectionBlocked = mode === "seed" && (!fixtureIds[0] || !fixtureIds[1] || fixtureIds[0] === fixtureIds[1]);
+  const manualSelectionBlocked = mode === "manual" && !manualFixtures.every(manualFixtureReady);
+
   function updateManual(index: 0 | 1, field: keyof Fixture, value: string) {
     setManualFixtures((current) => {
       const next = [...current] as [Partial<Fixture>, Partial<Fixture>];
@@ -94,6 +128,24 @@ export default function SoccerRoom({
   }
 
   async function buildRoom() {
+    if (seedSelectionBlocked) {
+      setRequestState({
+        status: "error",
+        message: "Select two different World Cup fixtures before building the prep room."
+      });
+      return;
+    }
+
+    if (manualSelectionBlocked) {
+      setRequestState({
+        status: "error",
+        message: "Manual mode needs two matches with home team, away team, competition, and date."
+      });
+      return;
+    }
+
+    setRequestState({ status: "idle", message: "Building the prep room from the API..." });
+
     const body =
       mode === "seed"
         ? { fixtureIds }
@@ -113,11 +165,23 @@ export default function SoccerRoom({
     });
 
     if (!response.ok) {
-      throw new Error("Brief request failed");
+      const errorBody = (await response.json().catch(() => null)) as { error?: string } | null;
+      setRequestState({
+        status: "error",
+        message: errorBody?.error ?? "Brief request failed. Check the fixture inputs and try again."
+      });
+      return;
     }
 
     const data = (await response.json()) as PrepRoomResponse;
     setPrep(data);
+    setRequestState({
+      status: "success",
+      message: `Prep room rebuilt for ${data.plans.length} fixtures at ${new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      })}.`
+    });
   }
 
   if (heroOnly) {
@@ -177,6 +241,11 @@ export default function SoccerRoom({
                   placeholder="Team, venue, date, group"
                 />
               </div>
+              {filteredFixtures.length === 0 ? (
+                <div className="request-state" data-status="error">
+                  No seeded fixtures match that search. Clear the search or use manual match mode.
+                </div>
+              ) : null}
               <div className="fixture-field">
                 <label htmlFor="fixture-one">Match one</label>
                 <select
@@ -184,7 +253,7 @@ export default function SoccerRoom({
                   value={fixtureIds[0]}
                   onChange={(event) => setFixtureIds([event.target.value, fixtureIds[1]])}
                 >
-                  {filteredFixtures.map((fixture) => (
+                  {seedOptions.map((fixture) => (
                     <option key={fixture.id} value={fixture.id}>
                       {fixtureLabel(fixture)} - {formatDate(fixture)}
                     </option>
@@ -198,13 +267,18 @@ export default function SoccerRoom({
                   value={fixtureIds[1]}
                   onChange={(event) => setFixtureIds([fixtureIds[0], event.target.value])}
                 >
-                  {filteredFixtures.map((fixture) => (
+                  {seedOptions.map((fixture) => (
                     <option key={fixture.id} value={fixture.id}>
                       {fixtureLabel(fixture)} - {formatDate(fixture)}
                     </option>
                   ))}
                 </select>
               </div>
+              {fixtureIds[0] === fixtureIds[1] ? (
+                <div className="request-state" data-status="error">
+                  Pick two different fixtures so the room can compare two match contexts.
+                </div>
+              ) : null}
             </>
           ) : (
             <div className="stack">
@@ -232,6 +306,16 @@ export default function SoccerRoom({
                       onChange={(event) => updateManual(index as 0 | 1, "date", event.target.value)}
                       placeholder="YYYY-MM-DD"
                     />
+                    <input
+                      value={manualFixtures[index].time ?? ""}
+                      onChange={(event) => updateManual(index as 0 | 1, "time", event.target.value)}
+                      placeholder="Kickoff time"
+                    />
+                    <input
+                      value={manualFixtures[index].venue ?? ""}
+                      onChange={(event) => updateManual(index as 0 | 1, "venue", event.target.value)}
+                      placeholder="Venue"
+                    />
                   </div>
                 </div>
               ))}
@@ -241,11 +325,14 @@ export default function SoccerRoom({
           <button
             type="button"
             className="primary-button"
-            disabled={isPending}
+            disabled={isPending || seedSelectionBlocked || manualSelectionBlocked}
             onClick={() => startTransition(() => void buildRoom())}
           >
             {isPending ? "Building..." : "Build Prep Room"}
           </button>
+          <div className="request-state" data-status={requestState.status} aria-live="polite">
+            {requestState.message}
+          </div>
 
           <div className="fixture-card">
             <strong>Evidence source</strong>
@@ -264,7 +351,12 @@ export default function SoccerRoom({
             <h2>Verified Prep Room</h2>
             <p>{prep.question}</p>
           </div>
-          <button type="button" className="secondary-button" onClick={() => void buildRoom()}>
+          <button
+            type="button"
+            className="secondary-button"
+            disabled={isPending || seedSelectionBlocked || manualSelectionBlocked}
+            onClick={() => startTransition(() => void buildRoom())}
+          >
             Refresh
           </button>
         </div>
