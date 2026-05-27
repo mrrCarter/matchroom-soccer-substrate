@@ -246,6 +246,37 @@ export default function SoccerRoom({
     }
   }
 
+  async function copyApiUrl() {
+    if (!canShareSeedLink) {
+      setRequestState({
+        status: "error",
+        message: "Select two seeded fixtures before copying the prep API URL."
+      });
+      return;
+    }
+
+    const url = new URL("/api/brief", window.location.origin);
+    url.searchParams.set("fixtureIds", fixtureIds.join(","));
+    const pairLabel = selectedSeedFixtures.map(fixtureLabel).join(" + ");
+
+    try {
+      if (!navigator.clipboard?.writeText) {
+        throw new Error("Clipboard API unavailable");
+      }
+
+      await navigator.clipboard.writeText(url.toString());
+      setRequestState({
+        status: "success",
+        message: `Prep API URL copied for ${pairLabel}.`
+      });
+    } catch {
+      setRequestState({
+        status: "success",
+        message: `Prep API URL ready: ${url.pathname}${url.search}`
+      });
+    }
+  }
+
   function downloadBriefJson() {
     const fixtureSlug = prep.plans
       .map((plan) => fileSafe(`${plan.fixture.homeTeam}-vs-${plan.fixture.awayTeam}`))
@@ -479,6 +510,14 @@ export default function SoccerRoom({
           <div className="panel-actions">
             <button type="button" className="secondary-button" onClick={downloadBriefJson}>
               Download JSON
+            </button>
+            <button
+              type="button"
+              className="secondary-button"
+              disabled={!canShareSeedLink}
+              onClick={() => void copyApiUrl()}
+            >
+              Copy API URL
             </button>
             <button
               type="button"
