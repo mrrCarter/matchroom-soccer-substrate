@@ -32,6 +32,12 @@ npm run dev -- --port 3002
 curl "http://localhost:3002/api/health"
 ```
 
+`GET /api/evidence` returns the real-data provenance packet for wiring source-proof UI or reviewer checks. It includes the OpenFootball fixture source, the StatsBomb evidence source, the opening stat, team metrics, top insights, replay count, default pair links, and SHA-256 hashes for the cached data files:
+
+```bash
+curl "http://localhost:3002/api/evidence"
+```
+
 `GET /api/fixtures` returns seeded upcoming fixtures with metadata and ready-to-use links for the default pair:
 
 ```bash

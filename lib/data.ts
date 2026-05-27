@@ -1,8 +1,25 @@
 import { promises as fs } from "fs";
+import { createHash } from "crypto";
 import path from "path";
 import type { EvidenceSummary, Fixture, HeroReplay } from "./types";
 
 const dataDir = path.join(process.cwd(), "public", "data");
+const dataFiles = [
+  "worldcup-2026-fixtures.json",
+  "statsbomb-evidence-summary.json",
+  "matchroom-hero-replay.json",
+  "matchroom-demo-brief.json"
+] as const;
+
+export type DataFileName = (typeof dataFiles)[number];
+
+export type DataFileProvenance = {
+  filename: DataFileName;
+  path: string;
+  bytes: number;
+  sha256: string;
+  modifiedAt: string;
+};
 
 async function readJson<T>(filename: string): Promise<T> {
   const file = path.join(dataDir, filename);
@@ -20,6 +37,25 @@ export async function getEvidenceSummary(): Promise<EvidenceSummary> {
 
 export async function getHeroReplay(): Promise<HeroReplay> {
   return readJson<HeroReplay>("matchroom-hero-replay.json");
+}
+
+export async function getDataFileProvenance(
+  filename: DataFileName
+): Promise<DataFileProvenance> {
+  const file = path.join(dataDir, filename);
+  const [raw, stats] = await Promise.all([fs.readFile(file), fs.stat(file)]);
+
+  return {
+    filename,
+    path: `public/data/${filename}`,
+    bytes: stats.size,
+    sha256: createHash("sha256").update(raw).digest("hex"),
+    modifiedAt: stats.mtime.toISOString()
+  };
+}
+
+export async function getAllDataFileProvenance(): Promise<DataFileProvenance[]> {
+  return Promise.all(dataFiles.map((filename) => getDataFileProvenance(filename)));
 }
 
 function fixtureSortTime(fixture: Fixture): number {

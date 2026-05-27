@@ -88,6 +88,12 @@ Validation rules:
 
 Returns app status, fixture count, evidence counts, opening stat, replay point count, and the default upcoming fixture pair with page/API drill-down links.
 
+### `GET /api/evidence`
+
+Returns a reviewer- and frontend-friendly real-data provenance packet. The response includes the OpenFootball fixture source URL, default upcoming pair, StatsBomb source URLs, evidence match metadata, opening stat, top insights, team metrics, replay summary, local data artifact byte counts, and SHA-256 hashes.
+
+The response also includes a `claimBoundary` string that keeps fixture facts separate from tactical inference.
+
 ## Evidence Rules
 
 - Channel logic uses StatsBomb pitch coordinates: x from 0 to 120, y from 0 to 80.
