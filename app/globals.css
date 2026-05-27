@@ -491,13 +491,48 @@ h1 {
   padding: 0 18px 18px;
 }
 
+.receipts-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 0 18px 12px;
+}
+
+.receipts-header h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.receipts-header p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
 .receipt {
+  display: grid;
+  gap: 5px;
   border-left: 3px solid var(--blue);
   padding: 8px 10px;
   background: rgba(98, 181, 255, 0.08);
   color: #dfe9ef;
   font-size: 13px;
   line-height: 1.45;
+}
+
+.receipt strong {
+  font-size: 12px;
+}
+
+.receipt span {
+  display: block;
+}
+
+.receipt-meta {
+  color: var(--muted);
+  font-size: 11px;
+  word-break: break-word;
 }
 
 .source-bar {
@@ -526,6 +561,7 @@ h1 {
 @media (max-width: 720px) {
   .topbar,
   .stat-ribbon,
+  .receipts-header,
   .pitch-caption {
     align-items: flex-start;
     flex-direction: column;

@@ -77,6 +77,7 @@ export default function SoccerRoom({
     status: "idle",
     message: "Ready to build a two-match prep room."
   });
+  const [showAllReceipts, setShowAllReceipts] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const fixtureById = useMemo(
@@ -124,6 +125,13 @@ export default function SoccerRoom({
   const seedSelectionBlocked = mode === "seed" && (!fixtureIds[0] || !fixtureIds[1] || fixtureIds[0] === fixtureIds[1]);
   const manualSelectionBlocked = mode === "manual" && !manualFixtures.every(manualFixtureReady);
   const canShareSeedLink = mode === "seed" && selectedSeedFixtures.length === 2 && fixtureIds[0] !== fixtureIds[1];
+  const totalEvidenceReceiptCount = prep.plans.reduce((count, plan) => count + plan.evidence.length, 0);
+  const visibleEvidenceReceipts = prep.plans.flatMap((plan) =>
+    (showAllReceipts ? plan.evidence : plan.evidence.slice(0, 2)).map((item) => ({
+      fixtureId: plan.fixture.id,
+      item
+    }))
+  );
 
   function updateManual(index: 0 | 1, field: keyof Fixture, value: string) {
     setManualFixtures((current) => {
@@ -466,15 +474,35 @@ export default function SoccerRoom({
           </article>
         </div>
 
+        <div className="receipts-header">
+          <div>
+            <h3>Evidence Receipts</h3>
+            <p>
+              {visibleEvidenceReceipts.length} of {totalEvidenceReceiptCount} StatsBomb events shown.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="secondary-button"
+            aria-pressed={showAllReceipts}
+            onClick={() => setShowAllReceipts((current) => !current)}
+          >
+            {showAllReceipts ? "Show Less" : `Show All ${totalEvidenceReceiptCount}`}
+          </button>
+        </div>
+
         <div className="receipts">
-          {prep.plans.flatMap((plan) =>
-            plan.evidence.slice(0, 2).map((item) => (
-              <div className="receipt" key={`${plan.fixture.id}-${item.eventId}`}>
-                {item.minute}:{String(item.second).padStart(2, "0")} {item.team} {item.eventType} -{" "}
-                {item.description}
-              </div>
-            ))
-          )}
+          {visibleEvidenceReceipts.map(({ fixtureId, item }) => (
+            <div className="receipt" key={`${fixtureId}-${item.eventId}`}>
+              <span className="receipt-meta">
+                Event {item.eventId} / Match {item.matchId}
+              </span>
+              <strong>
+                {item.minute}:{String(item.second).padStart(2, "0")} {item.team} {item.eventType}
+              </strong>
+              <span>{item.description}</span>
+            </div>
+          ))}
         </div>
 
         <div className="source-bar">
