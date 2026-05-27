@@ -24,6 +24,7 @@ export type FixturePairLinks = {
   pageRepeatedId: string;
   brief: string;
   fixtures: string;
+  demoScript: string;
 };
 
 export type Channel = "left" | "center" | "right";

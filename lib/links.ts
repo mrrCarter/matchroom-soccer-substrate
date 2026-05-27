@@ -13,6 +13,7 @@ export function buildFixturePairLinks(fixtures: Pick<Fixture, "id">[]): FixtureP
     page: `/?fixtureIds=${fixtureIds}`,
     pageRepeatedId: `/?${repeatedIds}`,
     brief: `/api/brief?fixtureIds=${fixtureIds}`,
-    fixtures: `/api/fixtures?ids=${fixtureIds}`
+    fixtures: `/api/fixtures?ids=${fixtureIds}`,
+    demoScript: `/api/demo-script?fixtureIds=${fixtureIds}`
   };
 }

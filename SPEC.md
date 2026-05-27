@@ -37,7 +37,7 @@ The app labels the OpenFootball fixture seed as schedule context and the StatsBo
 
 Returns seeded World Cup fixtures. Optional query parameter `q` filters by team, venue, date, group, round, or competition. Optional `limit` caps the response, and `ids=<id-a>,<id-b>` or repeated `id=<id>` returns exact seeded fixtures in caller order.
 
-The response includes `total`, `sourceUrl`, `defaultPair`, `nextKickoffUtc`, `links.defaultPair`, `links.selectedPair`, `missingIds`, and `data`. `links.selectedPair` is populated only when the request resolves exactly two seeded IDs.
+The response includes `total`, `sourceUrl`, `defaultPair`, `nextKickoffUtc`, `links.defaultPair`, `links.selectedPair`, `missingIds`, and `data`. `links.selectedPair` is populated only when the request resolves exactly two seeded IDs. Pair links include page, repeated-id page, brief JSON, fixture lookup, and demo-script URLs.
 
 ### `GET /api/brief`
 
