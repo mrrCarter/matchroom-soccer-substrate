@@ -25,7 +25,7 @@ The app labels the OpenFootball fixture seed as schedule context and the StatsBo
 
 ## User Flow
 
-1. Analyst opens `/`.
+1. Analyst opens `/`, optionally with `fixtureIds`, `ids`, or repeated `id` query params for a seeded pair.
 2. Analyst selects two World Cup fixtures or switches to manual match input.
 3. Client sends selected fixture IDs or manual fixture rows to `POST /api/brief`.
 4. API returns a two-fixture prep response with source status, scout read, skeptic check, coach actions, replay data, and evidence references.
@@ -35,7 +35,7 @@ The app labels the OpenFootball fixture seed as schedule context and the StatsBo
 
 ### `GET /api/fixtures`
 
-Returns seeded World Cup fixtures. Optional query parameter `q` filters by team, venue, date, group, round, or competition. Optional `limit` caps the response, and `ids=<id-a>,<id-b>` returns exact seeded fixtures in caller order.
+Returns seeded World Cup fixtures. Optional query parameter `q` filters by team, venue, date, group, round, or competition. Optional `limit` caps the response, and `ids=<id-a>,<id-b>` or repeated `id=<id>` returns exact seeded fixtures in caller order.
 
 The response includes `total`, `defaultPair`, `nextKickoffUtc`, `missingIds`, and `data`.
 

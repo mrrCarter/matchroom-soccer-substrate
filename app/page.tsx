@@ -7,6 +7,7 @@ type PageProps = {
   searchParams?: Promise<{
     fixtureIds?: string | string[];
     ids?: string | string[];
+    id?: string | string[];
   }>;
 };
 
@@ -36,7 +37,11 @@ export default async function Home({ searchParams }: PageProps) {
     getHeroReplay()
   ]);
   const params = (await searchParams) ?? {};
-  const requestedIds = [...paramToIds(params.fixtureIds), ...paramToIds(params.ids)];
+  const requestedIds = [
+    ...paramToIds(params.fixtureIds),
+    ...paramToIds(params.ids),
+    ...paramToIds(params.id)
+  ];
   const selectedFixtures = selectInitialFixtures(fixtures, requestedIds);
   const initialPrep = buildPrepRoomResponse(selectedFixtures, summary, replay);
 

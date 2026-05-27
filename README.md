@@ -68,10 +68,11 @@ Or exactly two manual matches:
 
 The API returns `400` for duplicate seeded IDs, missing seeded IDs, invalid manual dates, or anything other than two matches.
 
-The app shell also accepts the same pair in the URL:
+The app shell also accepts the same pair in the URL through `fixtureIds`, `ids`, or repeated `id` params:
 
 ```text
 /?fixtureIds=2026-06-12-usa-paraguay-los-angeles-inglewood-18,2026-06-13-qatar-switzerland-san-francisco-bay-area-santa-clara-7
+/?id=2026-06-12-usa-paraguay-los-angeles-inglewood-18&id=2026-06-13-qatar-switzerland-san-francisco-bay-area-santa-clara-7
 ```
 
 ## Product Direction
