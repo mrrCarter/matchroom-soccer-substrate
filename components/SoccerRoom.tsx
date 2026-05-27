@@ -25,6 +25,10 @@ function formatDate(fixture: Fixture) {
   return fixture.time ? `${fixture.date} ${fixture.time}` : fixture.date;
 }
 
+function sourceLabel(fixture: Fixture) {
+  return fixture.source === "manual" ? "Analyst-entered fixture context" : "OpenFootball World Cup 2026 seed";
+}
+
 function planMetricLabel(plan: PrepRoomResponse["plans"][number]) {
   return `${plan.fixture.competition} / ${plan.fixture.round}`;
 }
@@ -440,6 +444,28 @@ export default function SoccerRoom({
               {initialSummary.match.homeTeam} vs {initialSummary.match.awayTeam},{" "}
               {initialSummary.match.stadium}
             </span>
+          </div>
+
+          <div className="fixture-proof-list" aria-label="Selected fixture source proof">
+            {prep.plans.map((plan, index) => (
+              <div className="fixture-card fixture-proof" key={plan.fixture.id}>
+                <strong>
+                  Match {index + 1}: {fixtureLabel(plan.fixture)}
+                </strong>
+                <span className="proof-id">{plan.fixture.id}</span>
+                <span>
+                  {plan.fixture.kickOffUtc ?? formatDate(plan.fixture)}
+                  {plan.fixture.venue ? ` / ${plan.fixture.venue}` : ""}
+                </span>
+                <span>{sourceLabel(plan.fixture)}</span>
+                {plan.fixture.sourceUrl ? (
+                  <a href={plan.fixture.sourceUrl} target="_blank" rel="noreferrer">
+                    Open source feed
+                  </a>
+                ) : null}
+                {plan.fixture.sourceNote ? <span>{plan.fixture.sourceNote}</span> : null}
+              </div>
+            ))}
           </div>
         </div>
       </aside>
