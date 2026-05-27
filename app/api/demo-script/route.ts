@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getDefaultFixturePair, getEvidenceSummary, getFixtures } from "@/lib/data";
+import { parseFixtureIdsFromSearch, selectSeedFixturePair } from "@/lib/fixture-selection";
 import { buildFixturePairLinks } from "@/lib/links";
 import type { Fixture } from "@/lib/types";
 
@@ -7,47 +8,6 @@ export const dynamic = "force-dynamic";
 
 function badRequest(message: string, details?: unknown) {
   return NextResponse.json({ error: message, details }, { status: 400 });
-}
-
-function splitFixtureIds(value: string | null): string[] {
-  return (value ?? "")
-    .split(",")
-    .map((id) => id.trim())
-    .filter(Boolean);
-}
-
-function requestedFixtureIds(searchParams: URLSearchParams): string[] {
-  return [
-    ...splitFixtureIds(searchParams.get("fixtureIds")),
-    ...splitFixtureIds(searchParams.get("ids")),
-    ...searchParams.getAll("id").map((id) => id.trim())
-  ].filter(Boolean);
-}
-
-type Selection = { fixtures: Fixture[] } | { error: NextResponse };
-
-function selectSeedFixtures(seedFixtures: Fixture[], requestedIds: string[]): Selection {
-  const byId = new Map(seedFixtures.map((fixture) => [fixture.id, fixture]));
-  const uniqueIds = [...new Set(requestedIds)];
-
-  if (uniqueIds.length !== requestedIds.length) {
-    return { error: badRequest("Select two different fixtures.", { requestedIds }) };
-  }
-
-  const missingIds = uniqueIds.filter((id) => !byId.has(id));
-  if (missingIds.length > 0) {
-    return {
-      error: badRequest("One or more fixture IDs were not found in the World Cup seed.", {
-        missingIds
-      })
-    };
-  }
-
-  if (uniqueIds.length !== 2) {
-    return { error: badRequest("Select exactly two fixtures.", { requestedIds }) };
-  }
-
-  return { fixtures: uniqueIds.map((id) => byId.get(id) as Fixture) };
 }
 
 function fixtureLabel(fixture: Fixture): string {
@@ -64,14 +24,14 @@ function fixtureDetail(fixture: Fixture): string {
 export async function GET(request: Request) {
   const [fixtures, summary] = await Promise.all([getFixtures(), getEvidenceSummary()]);
   const { searchParams } = new URL(request.url);
-  const requestedIds = requestedFixtureIds(searchParams);
+  const requestedIds = parseFixtureIdsFromSearch(searchParams);
   const selected =
     requestedIds.length > 0
-      ? selectSeedFixtures(fixtures, requestedIds)
+      ? selectSeedFixturePair(fixtures, requestedIds)
       : { fixtures: getDefaultFixturePair(fixtures) };
 
   if ("error" in selected) {
-    return selected.error;
+    return badRequest(selected.error.message, selected.error.details);
   }
 
   const pair = selected.fixtures.slice(0, 2);

@@ -50,10 +50,11 @@ curl "http://localhost:3002/api/demo-script?id=2026-06-12-usa-paraguay-los-angel
 ```bash
 curl "http://localhost:3002/api/fixtures?limit=4"
 curl "http://localhost:3002/api/fixtures?q=usa"
+curl "http://localhost:3002/api/fixtures?fixtureIds=2026-06-12-usa-paraguay-los-angeles-inglewood-18,2026-06-13-qatar-switzerland-san-francisco-bay-area-santa-clara-7"
 curl "http://localhost:3002/api/fixtures?id=2026-06-12-usa-paraguay-los-angeles-inglewood-18&id=2026-06-13-qatar-switzerland-san-francisco-bay-area-santa-clara-7"
 ```
 
-The fixture response includes `links.defaultPair`, and exact two-ID lookups include `links.selectedPair`, with page, repeated-id page, brief JSON, fixture lookup, and demo-script URLs.
+The fixture response includes `links.defaultPair`, and exact two-ID lookups include `links.selectedPair`, with page, repeated-id page, brief JSON, fixture lookup, and demo-script URLs. It also reports `missingIds` and `duplicateIds` so callers can surface bad pair selections cleanly.
 
 `GET /api/brief?fixtureIds=<id-a>,<id-b>` returns a browser-openable prep room JSON for a specific pair. `ids=<id-a>,<id-b>` and repeated `id=<id>` params are accepted as aliases. The response includes `fixtureIds`, `evidenceReceiptCount`, `source` metadata, and seeded pair `links` so copied API URLs are self-describing, including the matching `/api/demo-script` URL.
 

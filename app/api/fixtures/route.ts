@@ -5,19 +5,11 @@ import {
   getFixtures,
   parseFixtureLimit
 } from "@/lib/data";
+import { findDuplicateFixtureIds, parseFixtureIdsFromSearch } from "@/lib/fixture-selection";
 import { buildFixturePairLinks } from "@/lib/links";
 import type { Fixture } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
-
-function requestedIds(searchParams: URLSearchParams): string[] {
-  const ids = [
-    ...searchParams.getAll("id"),
-    ...((searchParams.get("ids") ?? "").split(","))
-  ];
-
-  return ids.map((id) => id.trim()).filter(Boolean);
-}
 
 function isFixture(fixture: Fixture | undefined): fixture is Fixture {
   return Boolean(fixture);
@@ -28,15 +20,19 @@ export async function GET(request: Request) {
   const fixtures = await getFixtures();
   const query = searchParams.get("q");
   const limit = parseFixtureLimit(searchParams.get("limit"), query ? 60 : 36);
-  const ids = requestedIds(searchParams);
+  const ids = parseFixtureIdsFromSearch(searchParams);
   const byId = new Map(fixtures.map((fixture) => [fixture.id, fixture]));
+  const duplicateIds = findDuplicateFixtureIds(ids);
   const data =
     ids.length > 0
       ? ids.map((id) => byId.get(id)).filter(isFixture)
       : filterFixtures(fixtures, query, limit);
   const missingIds = ids.filter((id) => !byId.has(id));
   const defaultPair = getDefaultFixturePair(fixtures);
-  const selectedPair = ids.length === 2 && missingIds.length === 0 ? data.slice(0, 2) : [];
+  const selectedPair =
+    ids.length === 2 && missingIds.length === 0 && duplicateIds.length === 0
+      ? data.slice(0, 2)
+      : [];
 
   return NextResponse.json({
     count: data.length,
@@ -51,6 +47,7 @@ export async function GET(request: Request) {
       selectedPair: buildFixturePairLinks(selectedPair)
     },
     missingIds,
+    duplicateIds,
     data
   });
 }
