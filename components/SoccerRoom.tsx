@@ -29,6 +29,16 @@ function planMetricLabel(plan: PrepRoomResponse["plans"][number]) {
   return `${plan.fixture.competition} / ${plan.fixture.round}`;
 }
 
+function fileSafe(value: string) {
+  return (
+    value
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 80) || "fixture"
+  );
+}
+
 function manualFixtureReady(fixture: Partial<Fixture>) {
   return Boolean(
     fixture.homeTeam?.trim() &&
@@ -232,6 +242,37 @@ export default function SoccerRoom({
     }
   }
 
+  function downloadBriefJson() {
+    const fixtureSlug = prep.plans
+      .map((plan) => fileSafe(`${plan.fixture.homeTeam}-vs-${plan.fixture.awayTeam}`))
+      .join("__");
+    const packet = {
+      exportedAt: new Date().toISOString(),
+      fixtureIds: prep.plans.map((plan) => plan.fixture.id),
+      evidenceReceiptCount: totalEvidenceReceiptCount,
+      source: {
+        evidenceMatch: prep.evidenceMatch,
+        receipts: prep.receipts
+      },
+      prep
+    };
+    const blob = new Blob([JSON.stringify(packet, null, 2)], {
+      type: "application/json"
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `matchroom-brief-${fixtureSlug || "two-fixtures"}.json`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+    setRequestState({
+      status: "success",
+      message: `Downloaded JSON brief for ${prep.plans.length} fixtures with ${totalEvidenceReceiptCount} evidence receipts.`
+    });
+  }
+
   if (heroOnly) {
     return (
       <div>
@@ -409,14 +450,19 @@ export default function SoccerRoom({
             <h2>Verified Prep Room</h2>
             <p>{prep.question}</p>
           </div>
-          <button
-            type="button"
-            className="secondary-button"
-            disabled={isPending || seedSelectionBlocked || manualSelectionBlocked}
-            onClick={() => startTransition(() => void buildRoom())}
-          >
-            Refresh
-          </button>
+          <div className="panel-actions">
+            <button type="button" className="secondary-button" onClick={downloadBriefJson}>
+              Download JSON
+            </button>
+            <button
+              type="button"
+              className="secondary-button"
+              disabled={isPending || seedSelectionBlocked || manualSelectionBlocked}
+              onClick={() => startTransition(() => void buildRoom())}
+            >
+              Refresh
+            </button>
+          </div>
         </div>
 
         <PitchMap replay={prep.replay} summary={initialSummary} />

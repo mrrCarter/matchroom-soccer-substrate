@@ -250,6 +250,14 @@ h1 {
   line-height: 1.45;
 }
 
+.panel-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .stack {
   display: grid;
   gap: 12px;
@@ -336,6 +344,7 @@ h1 {
   color: var(--text);
   font-weight: 760;
   padding: 9px 12px;
+  white-space: nowrap;
 }
 
 .primary-button:disabled,
@@ -560,6 +569,7 @@ h1 {
 
 @media (max-width: 720px) {
   .topbar,
+  .panel-title,
   .stat-ribbon,
   .receipts-header,
   .pitch-caption {
@@ -568,8 +578,13 @@ h1 {
   }
 
   .topbar,
+  .panel-actions,
   .brand {
     align-items: center;
+  }
+
+  .panel-actions {
+    justify-content: flex-start;
   }
 
   .status-pill {
