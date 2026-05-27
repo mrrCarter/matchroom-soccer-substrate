@@ -277,6 +277,37 @@ export default function SoccerRoom({
     }
   }
 
+  async function copyDemoScriptUrl() {
+    if (!canShareSeedLink) {
+      setRequestState({
+        status: "error",
+        message: "Select two seeded fixtures before copying the script API URL."
+      });
+      return;
+    }
+
+    const url = new URL("/api/demo-script", window.location.origin);
+    url.searchParams.set("fixtureIds", fixtureIds.join(","));
+    const pairLabel = selectedSeedFixtures.map(fixtureLabel).join(" + ");
+
+    try {
+      if (!navigator.clipboard?.writeText) {
+        throw new Error("Clipboard API unavailable");
+      }
+
+      await navigator.clipboard.writeText(url.toString());
+      setRequestState({
+        status: "success",
+        message: `Demo script API URL copied for ${pairLabel}.`
+      });
+    } catch {
+      setRequestState({
+        status: "success",
+        message: `Demo script API URL ready: ${url.pathname}${url.search}`
+      });
+    }
+  }
+
   function downloadBriefJson() {
     const fixtureSlug = prep.plans
       .map((plan) => fileSafe(`${plan.fixture.homeTeam}-vs-${plan.fixture.awayTeam}`))
@@ -516,6 +547,14 @@ export default function SoccerRoom({
               onClick={() => void copyApiUrl()}
             >
               Copy API URL
+            </button>
+            <button
+              type="button"
+              className="secondary-button"
+              disabled={!canShareSeedLink}
+              onClick={() => void copyDemoScriptUrl()}
+            >
+              Copy Script URL
             </button>
             <button
               type="button"
