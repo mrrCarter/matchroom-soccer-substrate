@@ -1,5 +1,7 @@
 # 60-Second Demo Script
 
+The same script is available as JSON at `/api/demo-script`, including selected fixture IDs, pair links, source metadata, and a `teleprompter` string.
+
 Start with the stat:
 
 "43% of Spain's verified final-third entries in our evidence match went through the right channel. That came from parsing 4,824 StatsBomb events and 4,244 StatsBomb 360 frames, not from a prompt guess."
@@ -20,4 +22,3 @@ Demo flow:
 Close:
 
 "The win is trust under time pressure: analysts can choose any two upcoming matches, see what is known, see what is inferred, and hand coaches an action plan with receipts."
-

@@ -94,6 +94,12 @@ Returns a reviewer- and frontend-friendly real-data provenance packet. The respo
 
 The response also includes a `claimBoundary` string that keeps fixture facts separate from tactical inference.
 
+### `GET /api/demo-script`
+
+Returns a deterministic 60-second presenter script for the default upcoming pair or a selected seeded pair. The script starts with the verified opening stat from the StatsBomb evidence summary, then describes the selected fixtures, the fixture/evidence boundary, and the coach-ready workflow.
+
+The route accepts the same pair aliases as the app shell and brief API: `fixtureIds=<id-a>,<id-b>`, `ids=<id-a>,<id-b>`, or repeated `id=<id>` params. Invalid or duplicate IDs return `400`.
+
 ## Evidence Rules
 
 - Channel logic uses StatsBomb pitch coordinates: x from 0 to 120, y from 0 to 80.

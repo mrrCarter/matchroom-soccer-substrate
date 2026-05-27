@@ -38,6 +38,13 @@ curl "http://localhost:3002/api/health"
 curl "http://localhost:3002/api/evidence"
 ```
 
+`GET /api/demo-script` returns a deterministic 60-second presenter script for the default pair, starting with the verified opening stat. It accepts the same `fixtureIds`, `ids`, and repeated `id` pair aliases:
+
+```bash
+curl "http://localhost:3002/api/demo-script"
+curl "http://localhost:3002/api/demo-script?id=2026-06-12-usa-paraguay-los-angeles-inglewood-18&id=2026-06-13-qatar-switzerland-san-francisco-bay-area-santa-clara-7"
+```
+
 `GET /api/fixtures` returns seeded upcoming fixtures with metadata and ready-to-use links for the default pair:
 
 ```bash
