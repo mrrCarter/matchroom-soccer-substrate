@@ -41,7 +41,7 @@ The response includes `total`, `defaultPair`, `nextKickoffUtc`, `missingIds`, an
 
 ### `GET /api/brief`
 
-Returns the default prep room for the next two seeded fixtures. Optional `fixtureIds=<id-a>,<id-b>` returns the prep room for a specific seeded pair and uses the same validation rules as `POST /api/brief`.
+Returns the default prep room for the next two seeded fixtures. Optional `fixtureIds=<id-a>,<id-b>` returns the prep room for a specific seeded pair and uses the same validation rules as `POST /api/brief`. `ids=<id-a>,<id-b>` and repeated `id=<id>` params are accepted as aliases for easier wiring.
 
 ### `POST /api/brief`
 

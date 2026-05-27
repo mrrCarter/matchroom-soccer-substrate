@@ -33,7 +33,7 @@ curl "http://localhost:3002/api/fixtures?limit=4"
 curl "http://localhost:3002/api/fixtures?q=usa"
 ```
 
-`GET /api/brief?fixtureIds=<id-a>,<id-b>` returns a browser-openable prep room JSON for a specific pair. The response includes `fixtureIds`, `evidenceReceiptCount`, and `source` metadata so copied API URLs are self-describing.
+`GET /api/brief?fixtureIds=<id-a>,<id-b>` returns a browser-openable prep room JSON for a specific pair. `ids=<id-a>,<id-b>` and repeated `id=<id>` params are accepted as aliases. The response includes `fixtureIds`, `evidenceReceiptCount`, and `source` metadata so copied API URLs are self-describing.
 
 `POST /api/brief` accepts exactly two seeded fixture IDs:
 

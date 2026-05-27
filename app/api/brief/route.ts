@@ -26,11 +26,19 @@ function badRequest(message: string, details?: unknown) {
   );
 }
 
-function parseFixtureIds(value: string | null): string[] {
+function splitFixtureIds(value: string | null): string[] {
   return (value ?? "")
     .split(",")
     .map((id) => id.trim())
     .filter(Boolean);
+}
+
+function requestedFixtureIds(searchParams: URLSearchParams): string[] {
+  return [
+    ...splitFixtureIds(searchParams.get("fixtureIds")),
+    ...splitFixtureIds(searchParams.get("ids")),
+    ...searchParams.getAll("id").map((id) => id.trim())
+  ].filter(Boolean);
 }
 
 type SeedSelection = { fixtures: Fixture[] } | { error: NextResponse };
@@ -93,7 +101,7 @@ export async function GET(request: Request) {
     getHeroReplay()
   ]);
   const { searchParams } = new URL(request.url);
-  const requestedIds = parseFixtureIds(searchParams.get("fixtureIds"));
+  const requestedIds = requestedFixtureIds(searchParams);
   const selected =
     requestedIds.length > 0
       ? selectSeedFixtures(fixtures, requestedIds)
