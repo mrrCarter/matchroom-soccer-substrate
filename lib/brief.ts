@@ -74,6 +74,13 @@ export function buildPrepRoomResponse(
   replay: HeroReplay
 ): PrepRoomResponse {
   const selected = fixtures.slice(0, 2);
+  const plans = selected.map((fixture, index) => buildPlan(fixture, summary, index));
+  const receipts = [
+    `${summary.match.eventCount.toLocaleString()} StatsBomb event rows parsed for ${summary.match.homeTeam} vs ${summary.match.awayTeam}.`,
+    `${summary.match.threeSixtyFrameCount.toLocaleString()} StatsBomb 360 frames available for spatial context.`,
+    summary.source.attribution,
+    "Fixture facts and tactical inference are intentionally separated in the response."
+  ];
 
   return {
     generatedAt: new Date().toISOString(),
@@ -81,14 +88,26 @@ export function buildPrepRoomResponse(
       selected.length === 2
         ? `Prepare for ${formatFixture(selected[0])} and ${formatFixture(selected[1])}.`
         : "Prepare two upcoming fixtures.",
+    fixtureIds: selected.map((fixture) => fixture.id),
+    evidenceReceiptCount: plans.reduce((count, plan) => count + plan.evidence.length, 0),
     evidenceMatch: summary.match,
-    plans: selected.map((fixture, index) => buildPlan(fixture, summary, index)),
+    source: {
+      evidence: {
+        ...summary.source,
+        match: summary.match
+      },
+      fixtures: selected.map((fixture) => ({
+        id: fixture.id,
+        label: formatFixture(fixture),
+        source: fixture.source,
+        sourceUrl: fixture.sourceUrl,
+        sourceNote: fixture.sourceNote,
+        kickOffUtc: fixture.kickOffUtc,
+        venue: fixture.venue
+      }))
+    },
+    plans,
     replay,
-    receipts: [
-      `${summary.match.eventCount.toLocaleString()} StatsBomb event rows parsed for ${summary.match.homeTeam} vs ${summary.match.awayTeam}.`,
-      `${summary.match.threeSixtyFrameCount.toLocaleString()} StatsBomb 360 frames available for spatial context.`,
-      summary.source.attribution,
-      "Fixture facts and tactical inference are intentionally separated in the response."
-    ]
+    receipts
   };
 }

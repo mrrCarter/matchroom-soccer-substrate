@@ -125,10 +125,28 @@ export type FixturePlan = {
   evidence: EvidenceRef[];
 };
 
+export type PrepSourceMetadata = {
+  evidence: EvidenceSummary["source"] & {
+    match: EvidenceSummary["match"];
+  };
+  fixtures: Array<{
+    id: string;
+    label: string;
+    source: FixtureSource;
+    sourceUrl?: string;
+    sourceNote?: string;
+    kickOffUtc?: string | null;
+    venue?: string;
+  }>;
+};
+
 export type PrepRoomResponse = {
   generatedAt: string;
   question: string;
+  fixtureIds: string[];
+  evidenceReceiptCount: number;
   evidenceMatch: EvidenceSummary["match"];
+  source: PrepSourceMetadata;
   plans: FixturePlan[];
   replay: HeroReplay;
   receipts: string[];

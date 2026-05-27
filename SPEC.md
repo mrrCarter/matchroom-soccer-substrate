@@ -76,7 +76,7 @@ or:
 }
 ```
 
-Returns `PrepRoomResponse` from `lib/types.ts`.
+Returns `PrepRoomResponse` from `lib/types.ts`, including `fixtureIds`, `evidenceReceiptCount`, and `source` metadata for the StatsBomb evidence feed plus selected fixture rows.
 
 Validation rules:
 

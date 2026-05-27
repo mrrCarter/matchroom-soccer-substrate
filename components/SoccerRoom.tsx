@@ -283,12 +283,9 @@ export default function SoccerRoom({
       .join("__");
     const packet = {
       exportedAt: new Date().toISOString(),
-      fixtureIds: prep.plans.map((plan) => plan.fixture.id),
-      evidenceReceiptCount: totalEvidenceReceiptCount,
-      source: {
-        evidenceMatch: prep.evidenceMatch,
-        receipts: prep.receipts
-      },
+      fixtureIds: prep.fixtureIds,
+      evidenceReceiptCount: prep.evidenceReceiptCount,
+      source: prep.source,
       prep
     };
     const blob = new Blob([JSON.stringify(packet, null, 2)], {
