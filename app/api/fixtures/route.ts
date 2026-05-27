@@ -5,6 +5,7 @@ import {
   getFixtures,
   parseFixtureLimit
 } from "@/lib/data";
+import { buildFixturePairLinks } from "@/lib/links";
 import type { Fixture } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -20,23 +21,6 @@ function requestedIds(searchParams: URLSearchParams): string[] {
 
 function isFixture(fixture: Fixture | undefined): fixture is Fixture {
   return Boolean(fixture);
-}
-
-function pairLinks(fixtures: Fixture[]) {
-  const ids = fixtures.slice(0, 2).map((fixture) => fixture.id);
-  if (ids.length !== 2) {
-    return null;
-  }
-
-  const fixtureIds = ids.map((id) => encodeURIComponent(id)).join(",");
-  const repeatedIds = ids.map((id) => `id=${encodeURIComponent(id)}`).join("&");
-
-  return {
-    page: `/?fixtureIds=${fixtureIds}`,
-    pageRepeatedId: `/?${repeatedIds}`,
-    brief: `/api/brief?fixtureIds=${fixtureIds}`,
-    fixtures: `/api/fixtures?ids=${fixtureIds}`
-  };
 }
 
 export async function GET(request: Request) {
@@ -63,8 +47,8 @@ export async function GET(request: Request) {
     defaultPair,
     nextKickoffUtc: defaultPair[0]?.kickOffUtc ?? null,
     links: {
-      defaultPair: pairLinks(defaultPair),
-      selectedPair: pairLinks(selectedPair)
+      defaultPair: buildFixturePairLinks(defaultPair),
+      selectedPair: buildFixturePairLinks(selectedPair)
     },
     missingIds,
     data

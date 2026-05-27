@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { getEvidenceSummary, getFixtures, getHeroReplay } from "@/lib/data";
+import { getDefaultFixturePair, getEvidenceSummary, getFixtures, getHeroReplay } from "@/lib/data";
+import { buildFixturePairLinks } from "@/lib/links";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +10,7 @@ export async function GET() {
     getEvidenceSummary(),
     getHeroReplay()
   ]);
+  const defaultPair = getDefaultFixturePair(fixtures);
 
   return NextResponse.json({
     ok: true,
@@ -17,7 +19,17 @@ export async function GET() {
     fixtures: {
       count: fixtures.length,
       source: fixtures[0]?.source,
-      firstKickOffUtc: fixtures[0]?.kickOffUtc
+      sourceUrl: fixtures[0]?.sourceUrl,
+      firstKickOffUtc: fixtures[0]?.kickOffUtc,
+      nextKickoffUtc: defaultPair[0]?.kickOffUtc ?? null,
+      defaultPair: defaultPair.map((fixture) => ({
+        id: fixture.id,
+        homeTeam: fixture.homeTeam,
+        awayTeam: fixture.awayTeam,
+        kickOffUtc: fixture.kickOffUtc,
+        venue: fixture.venue
+      })),
+      links: buildFixturePairLinks(defaultPair)
     },
     evidence: {
       source: summary.source.name,

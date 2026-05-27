@@ -26,6 +26,12 @@ npm run dev -- --port 3002
 
 ## API Quick Check
 
+`GET /api/health` returns app status, real-data counts, the default upcoming pair, and drill-down links:
+
+```bash
+curl "http://localhost:3002/api/health"
+```
+
 `GET /api/fixtures` returns seeded upcoming fixtures with metadata and ready-to-use links for the default pair:
 
 ```bash

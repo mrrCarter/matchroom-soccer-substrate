@@ -86,7 +86,7 @@ Validation rules:
 
 ### `GET /api/health`
 
-Returns app status, fixture count, evidence counts, opening stat, and replay point count.
+Returns app status, fixture count, evidence counts, opening stat, replay point count, and the default upcoming fixture pair with page/API drill-down links.
 
 ## Evidence Rules
 
