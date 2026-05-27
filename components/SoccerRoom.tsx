@@ -116,8 +116,14 @@ export default function SoccerRoom({
     return [...new Map([...pinned, ...filteredFixtures].map((fixture) => [fixture.id, fixture])).values()];
   }, [filteredFixtures, fixtureById, fixtureIds]);
 
+  const selectedSeedFixtures = useMemo(
+    () => fixtureIds.map((id) => fixtureById.get(id)).filter((fixture): fixture is Fixture => Boolean(fixture)),
+    [fixtureById, fixtureIds]
+  );
+
   const seedSelectionBlocked = mode === "seed" && (!fixtureIds[0] || !fixtureIds[1] || fixtureIds[0] === fixtureIds[1]);
   const manualSelectionBlocked = mode === "manual" && !manualFixtures.every(manualFixtureReady);
+  const canShareSeedLink = mode === "seed" && selectedSeedFixtures.length === 2 && fixtureIds[0] !== fixtureIds[1];
 
   function updateManual(index: 0 | 1, field: keyof Fixture, value: string) {
     setManualFixtures((current) => {
@@ -182,6 +188,40 @@ export default function SoccerRoom({
         minute: "2-digit"
       })}.`
     });
+  }
+
+  async function copyShareLink() {
+    if (!canShareSeedLink) {
+      setRequestState({
+        status: "error",
+        message: "Select two different seeded fixtures before copying a share link."
+      });
+      return;
+    }
+
+    const url = new URL(window.location.href);
+    url.searchParams.set("fixtureIds", fixtureIds.join(","));
+    url.searchParams.delete("ids");
+    window.history.replaceState(null, "", url.toString());
+
+    const pairLabel = selectedSeedFixtures.map(fixtureLabel).join(" + ");
+
+    try {
+      if (!navigator.clipboard?.writeText) {
+        throw new Error("Clipboard API unavailable");
+      }
+
+      await navigator.clipboard.writeText(url.toString());
+      setRequestState({
+        status: "success",
+        message: `Share link copied for ${pairLabel}.`
+      });
+    } catch {
+      setRequestState({
+        status: "success",
+        message: "Share link is ready in the address bar. Clipboard access was unavailable."
+      });
+    }
   }
 
   if (heroOnly) {
@@ -322,14 +362,24 @@ export default function SoccerRoom({
             </div>
           )}
 
-          <button
-            type="button"
-            className="primary-button"
-            disabled={isPending || seedSelectionBlocked || manualSelectionBlocked}
-            onClick={() => startTransition(() => void buildRoom())}
-          >
-            {isPending ? "Building..." : "Build Prep Room"}
-          </button>
+          <div className="action-row">
+            <button
+              type="button"
+              className="primary-button"
+              disabled={isPending || seedSelectionBlocked || manualSelectionBlocked}
+              onClick={() => startTransition(() => void buildRoom())}
+            >
+              {isPending ? "Building..." : "Build Prep Room"}
+            </button>
+            <button
+              type="button"
+              className="secondary-button"
+              disabled={!canShareSeedLink}
+              onClick={() => void copyShareLink()}
+            >
+              Copy Share Link
+            </button>
+          </div>
           <div className="request-state" data-status={requestState.status} aria-live="polite">
             {requestState.message}
           </div>

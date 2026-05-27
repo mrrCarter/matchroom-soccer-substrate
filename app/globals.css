@@ -344,6 +344,17 @@ h1 {
   opacity: 0.55;
 }
 
+.action-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(132px, auto);
+  gap: 10px;
+}
+
+.action-row .primary-button,
+.action-row .secondary-button {
+  width: 100%;
+}
+
 .request-state {
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -530,6 +541,7 @@ h1 {
   }
 
   .stat-ribbon,
+  .action-row,
   .manual-grid,
   .insight-grid,
   .metric-strip,
