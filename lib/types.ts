@@ -19,6 +19,13 @@ export type Fixture = {
   sourceNote?: string;
 };
 
+export type FixturePairLinks = {
+  page: string;
+  pageRepeatedId: string;
+  brief: string;
+  fixtures: string;
+};
+
 export type Channel = "left" | "center" | "right";
 
 export type EvidenceRef = {
@@ -147,6 +154,7 @@ export type PrepRoomResponse = {
   evidenceReceiptCount: number;
   evidenceMatch: EvidenceSummary["match"];
   source: PrepSourceMetadata;
+  links: FixturePairLinks | null;
   plans: FixturePlan[];
   replay: HeroReplay;
   receipts: string[];

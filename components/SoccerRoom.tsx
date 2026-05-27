@@ -286,6 +286,7 @@ export default function SoccerRoom({
       fixtureIds: prep.fixtureIds,
       evidenceReceiptCount: prep.evidenceReceiptCount,
       source: prep.source,
+      links: prep.links,
       prep
     };
     const blob = new Blob([JSON.stringify(packet, null, 2)], {

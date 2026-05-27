@@ -42,7 +42,7 @@ curl "http://localhost:3002/api/fixtures?id=2026-06-12-usa-paraguay-los-angeles-
 
 The fixture response includes `links.defaultPair`, and exact two-ID lookups include `links.selectedPair`, with page, repeated-id page, brief JSON, and fixture lookup URLs.
 
-`GET /api/brief?fixtureIds=<id-a>,<id-b>` returns a browser-openable prep room JSON for a specific pair. `ids=<id-a>,<id-b>` and repeated `id=<id>` params are accepted as aliases. The response includes `fixtureIds`, `evidenceReceiptCount`, and `source` metadata so copied API URLs are self-describing.
+`GET /api/brief?fixtureIds=<id-a>,<id-b>` returns a browser-openable prep room JSON for a specific pair. `ids=<id-a>,<id-b>` and repeated `id=<id>` params are accepted as aliases. The response includes `fixtureIds`, `evidenceReceiptCount`, `source` metadata, and seeded pair `links` so copied API URLs are self-describing.
 
 `POST /api/brief` accepts exactly two seeded fixture IDs:
 

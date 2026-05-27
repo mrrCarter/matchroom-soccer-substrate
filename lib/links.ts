@@ -1,11 +1,4 @@
-import type { Fixture } from "./types";
-
-export type FixturePairLinks = {
-  page: string;
-  pageRepeatedId: string;
-  brief: string;
-  fixtures: string;
-};
+import type { Fixture, FixturePairLinks } from "./types";
 
 export function buildFixturePairLinks(fixtures: Pick<Fixture, "id">[]): FixturePairLinks | null {
   const ids = fixtures.slice(0, 2).map((fixture) => fixture.id);

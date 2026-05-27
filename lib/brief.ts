@@ -6,6 +6,7 @@ import type {
   PrepRoomResponse,
   TeamEvidence
 } from "./types";
+import { buildFixturePairLinks } from "./links";
 
 function firstTeam(summary: EvidenceSummary): TeamEvidence {
   return summary.teams[0];
@@ -75,6 +76,7 @@ export function buildPrepRoomResponse(
 ): PrepRoomResponse {
   const selected = fixtures.slice(0, 2);
   const plans = selected.map((fixture, index) => buildPlan(fixture, summary, index));
+  const seededPair = selected.length === 2 && selected.every((fixture) => fixture.source !== "manual");
   const receipts = [
     `${summary.match.eventCount.toLocaleString()} StatsBomb event rows parsed for ${summary.match.homeTeam} vs ${summary.match.awayTeam}.`,
     `${summary.match.threeSixtyFrameCount.toLocaleString()} StatsBomb 360 frames available for spatial context.`,
@@ -106,6 +108,7 @@ export function buildPrepRoomResponse(
         venue: fixture.venue
       }))
     },
+    links: seededPair ? buildFixturePairLinks(selected) : null,
     plans,
     replay,
     receipts

@@ -76,7 +76,7 @@ or:
 }
 ```
 
-Returns `PrepRoomResponse` from `lib/types.ts`, including `fixtureIds`, `evidenceReceiptCount`, and `source` metadata for the StatsBomb evidence feed plus selected fixture rows.
+Returns `PrepRoomResponse` from `lib/types.ts`, including `fixtureIds`, `evidenceReceiptCount`, `source` metadata for the StatsBomb evidence feed plus selected fixture rows, and seeded pair `links` when the request uses World Cup seed fixtures.
 
 Validation rules:
 
